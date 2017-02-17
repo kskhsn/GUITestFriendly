@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel;
-
+﻿using GUITestFriendly.Models;
 using Livet;
 using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.EventListeners;
-using Livet.Messaging.Windows;
-
-using GUITestFriendly.Models;
 
 namespace GUITestFriendly.ViewModels
 {
@@ -59,8 +48,129 @@ namespace GUITestFriendly.ViewModels
          * 自動的にUIDispatcher上での通知に変換されます。変更通知に際してUIDispatcherを操作する必要はありません。
          */
 
+        private Stringer Stringer = new Stringer();
+
         public void Initialize()
         {
         }
+        public void ButtonClickCommand()
+        {
+            this.Answer = this.Stringer.Combine(this.Lhs, this.Rhs);
+        }
+
+        public void ButtonClickCommand2()
+        {
+            this.Answer = "!!!";
+        }
+        public void ButtonClickCommand3()
+        {
+            this.Answer = "???";
+        }
+
+        #region Lhs変更通知プロパティ
+        private string _Lhs;
+
+        public string Lhs
+        {
+            get { return this._Lhs; }
+
+            set
+            {
+                if (this._Lhs == value)
+                {
+                    return;
+                }
+
+                this._Lhs = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+        #region Rhs変更通知プロパティ
+        private string _Rhs;
+
+        public string Rhs
+        {
+            get { return this._Rhs; }
+
+            set
+            {
+                if (this._Rhs == value)
+                {
+                    return;
+                }
+
+                this._Rhs = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+        #region Answer変更通知プロパティ
+        private string _Answer;
+
+        public string Answer
+        {
+            get { return this._Answer; }
+
+            set
+            {
+                if (this._Answer == value)
+                {
+                    return;
+                }
+
+                this._Answer = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+
+        #region ACommand
+        private ViewModelCommand _ACommand;
+
+        public ViewModelCommand ACommand
+        {
+            get
+            {
+                if (_ACommand == null)
+                {
+                    _ACommand = new ViewModelCommand(A);
+                }
+                return _ACommand;
+            }
+        }
+
+        public void A()
+        {
+            this.Answer = "666";
+        }
+        #endregion
+
+
+        #region BCommand
+        private ListenerCommand<string> _BCommand;
+
+        public ListenerCommand<string> BCommand
+        {
+            get
+            {
+                if (_BCommand == null)
+                {
+                    _BCommand = new ListenerCommand<string>(B);
+                }
+                return _BCommand;
+            }
+        }
+
+        public void B(string parameter)
+        {
+            this.Answer = new string(parameter[0], 3);
+        }
+        #endregion
     }
 }
